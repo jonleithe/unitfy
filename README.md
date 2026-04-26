@@ -26,6 +26,18 @@ It supports temperature, length, volume, and pressure conversions, with:
 - Ninja (preset generator)
 - Optional: GNU readline development package for history and line editing
 
+## Install
+
+### Arch Linux (AUR)
+
+`unitfy` is available in the Arch User Repository.
+
+```bash
+yay -S unitfy
+```
+
+If you do not use an AUR helper, clone the AUR package from `https://aur.archlinux.org/unitfy.git` and build it with `makepkg -risc`.
+
 ## Build
 
 ### Debug

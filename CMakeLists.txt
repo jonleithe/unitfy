@@ -7,10 +7,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(UNITFY_PKGREL "" CACHE STRING "Optional package release for runtime version output")
+set(PKGREL_SUFFIX "")
+if(UNITFY_PKGREL)
+    string(REGEX REPLACE "^-+" "" UNITFY_PKGREL_CLEAN "${UNITFY_PKGREL}")
+    if(NOT UNITFY_PKGREL_CLEAN STREQUAL "")
+        set(PKGREL_SUFFIX "-${UNITFY_PKGREL_CLEAN}")
+    endif()
+endif()
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(VERSION_SUFFIX "-debug")
+    set(VERSION_SUFFIX "${PKGREL_SUFFIX}-debug")
 else()
-    set(VERSION_SUFFIX "")
+    set(VERSION_SUFFIX "${PKGREL_SUFFIX}")
 endif()
 
 configure_file(

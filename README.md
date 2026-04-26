@@ -17,6 +17,7 @@ It supports temperature, length, volume, and pressure conversions, with:
 - Case-insensitive unit parsing
 - Defensive error handling for invalid physical values
 - CMake preset-based Debug and Release builds
+- Automated CLI version from CMake project metadata
 
 ## Requirements
 
@@ -59,6 +60,14 @@ Build output binaries are written to `bin/`.
 ./bin/delta 1 atm
 ./bin/delta 12 "fl oz"
 ```
+
+### Version
+
+```bash
+./bin/delta --version
+```
+
+The version shown by the binary is generated from `project(... VERSION ...)` in `CMakeLists.txt` during CMake configure.
 
 ## Test
 

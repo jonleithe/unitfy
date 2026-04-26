@@ -125,7 +125,9 @@ CommandResult MDelta::process_input(const std::string& input){
 
 void MDelta::repl(void)
 {
-    printf(cli_messages::kReplBannerFmt, program_name_.c_str());
+    printf(cli_messages::kReplBannerFmt,
+           program_name_.c_str(),
+           DELTA_VERSION);
     printf("\n");
     printf("%s\n", cli_messages::kReplHint);
         
@@ -189,6 +191,15 @@ int MDelta::run(int argc, char* argv[])
 
         // If one argument, treat it as a single input string.
         else if (argc == 2){
+            const std::string arg = argv[1];
+            if (arg == "--version") {
+                printf(cli_messages::kVersionFmt,
+                       program_name_.c_str(),
+                       DELTA_VERSION);
+                printf("\n");
+                return 0;
+            }
+
             std::string combined = argv[1];
             const std::size_t space_pos = combined.find(' ');
 
@@ -196,6 +207,8 @@ int MDelta::run(int argc, char* argv[])
                 printf(cli_messages::kCliUsageFmt, program_name_.c_str());
                 printf("\n");
                 printf(cli_messages::kCliUsageReplFmt, program_name_.c_str());
+                printf("\n");
+                printf(cli_messages::kCliUsageVersionFmt, program_name_.c_str());
                 printf("\n");
                 
                 return 1;

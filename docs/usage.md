@@ -43,6 +43,14 @@ You can pass conversion input directly as arguments:
 ./bin/delta 1.5 bar
 ```
 
+Print the program version:
+
+```bash
+./bin/delta --version
+```
+
+The printed version is generated from `project(... VERSION ...)` in `CMakeLists.txt`.
+
 Units containing spaces must be quoted or passed as separate arguments:
 
 ```bash

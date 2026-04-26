@@ -3,6 +3,8 @@
 #include <string>
 #include <stdexcept>
 
+#include "delta_version.h"
+
 
 
 // Quantity types and unit conversions
@@ -46,12 +48,14 @@ inline constexpr const char* kUnknownPressureUnitPrefix = "Unknown pressure unit
 
 
 namespace cli_messages {
+inline constexpr const char* kVersionFmt = "%s v%s";
 inline constexpr const char* kGoodbyeFmt = "Thank you for using %s! Have a nice day! 2026-jole";
 inline constexpr const char* kInvalidInputFormat = "Invalid input format. Use: value unit";
-inline constexpr const char* kReplBannerFmt = "%s v1.0 - unit conversion REPL";
+inline constexpr const char* kReplBannerFmt = "%s v%s - unit conversion REPL";
 inline constexpr const char* kReplHint = "Type 'help' for usage or 'exit' to quit.";
 inline constexpr const char* kCliUsageFmt = "Usage: %s [value unit]";
 inline constexpr const char* kCliUsageReplFmt = "Or:    %s (no args for REPL mode)";
+inline constexpr const char* kCliUsageVersionFmt = "Or:    %s --version";
 inline constexpr const char* kHelpTitleFmt = "%s unit conversion utility";
 inline constexpr const char* kHelpUsage = "Usage: value unit";
 inline constexpr const char* kHelpExamples = "Examples: 78 fahrenheit, 100 celsius, 5 meters, 2 liters, 1 atm";

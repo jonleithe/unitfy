@@ -1,0 +1,3 @@
+#pragma once
+
+#define DELTA_VERSION "@PROJECT_VERSION@"

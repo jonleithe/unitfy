@@ -75,6 +75,12 @@ See `docs/usage.md` for more examples and accepted unit aliases.
 - Add tests when behavior changes.
 - Update docs when user-visible behavior changes.
 
+## Versioning
+
+- Runtime version output (`./bin/delta --version`) is automated from CMake project metadata.
+- Source of truth is `project(delta VERSION x.y.z ...)` in `CMakeLists.txt`.
+- To bump the application version, update that version and reconfigure/build.
+
 ## Pull Request Checklist
 
 - [ ] Code builds with the intended preset(s)

@@ -1,11 +1,17 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(delta LANGUAGES CXX)
+project(delta VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+configure_file(
+    ${CMAKE_SOURCE_DIR}/inc/delta_version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/delta_version.h
+    @ONLY
+)
 
 add_executable(delta
     main.cpp
@@ -20,6 +26,7 @@ add_executable(delta
 target_include_directories(delta
     PRIVATE
         inc
+    ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
 find_library(READLINE_LIBRARY readline)
@@ -54,6 +61,7 @@ if(BUILD_TESTING)
     target_include_directories(delta_smoke_test
         PRIVATE
             inc
+            ${CMAKE_CURRENT_BINARY_DIR}/generated
     )
 
     if(READLINE_LIBRARY)

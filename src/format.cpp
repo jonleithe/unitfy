@@ -1,3 +1,10 @@
+/*
+ * filename:    format.cpp
+ * created:     26 April 2026
+ * author:      jole
+ * description: Numeric formatting helpers for conversion output.
+ */
+
 #include <cmath>
 #include <iomanip>
 #include <sstream>

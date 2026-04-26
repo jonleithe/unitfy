@@ -1,3 +1,11 @@
+/*
+ * filename:    smoke_test.cpp
+ * created:     26 April 2026
+ * author:      jole
+ * description: Smoke tests for all quantity types (temperature, length,
+ *              volume, pressure) covering conversions and error handling.
+ */
+
 #include "delta.h"
 
 #include <cmath>

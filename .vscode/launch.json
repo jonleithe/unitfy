@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug delta (gdb)",
+      "name": "Debug unitfy (gdb)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/delta",
+      "program": "${workspaceFolder}/bin/unitfy",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

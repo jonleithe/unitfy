@@ -1,3 +1,10 @@
+/*
+ * filename:    pressure.cpp
+ * created:     26 April 2026
+ * author:      jole
+ * description: Pressure quantity type and unit conversion implementation.
+ */
+
 #include <cstdio>
 
 #include "delta.h"

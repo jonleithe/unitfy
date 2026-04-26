@@ -1,3 +1,11 @@
+/*
+ * filename:    delta.cpp
+ * created:     26 April 2026
+ * author:      jole
+ * description: Core application logic: REPL and CLI mode, input parsing,
+ *              and dispatching to quantity conversion routines.
+ */
+
 #include <cstdio>
 #include <string>
 #include <cstdlib>
@@ -147,17 +155,27 @@ CommandResult MDelta::process_input(const std::string& input){
 
 
 
+/*
+ * MDelta::repl() implements the Read-Eval-Print Loop (REPL) for interactive use:
+ * - Displays a banner with the program name and version
+ * - Provides usage hints
+ * - Supports command history if readline is available
+ * - Processes user input in a loop until exit commands are received
+ */
 void MDelta::repl(void)
 {
     printf(cli_messages::kReplBannerFmt,
            program_name_.c_str(),
-           DELTA_VERSION);
+           UNITFY_VERSION);
+           
     printf("\n");
     printf("%s\n", cli_messages::kReplHint);
         
     // The code below will be dimmed out if HAVE_READLINE is not defined.
     // That's fine since it will be evaluated at build time and won't cause
     // issues on platforms without readline.
+    // Readline provides a better user experience with input editing and
+    // history, but we want to support basic REPL functionality even without it.
     #if defined(HAVE_READLINE)
         const std::string history_file = history_file_path();
         if (!history_file.empty()) {
@@ -203,6 +221,15 @@ void MDelta::repl(void)
 
 
 
+/*
+ * MDelta::run() implements the main application logic:
+ * - Parses command-line arguments to determine mode (REPL vs single input)
+ * - In REPL mode, starts an interactive loop with readline support if available
+ * - In single input mode, processes the input string directly
+ * - Handles --version flag and provides usage hints for invalid input
+ * - Catches and reports QuantityError exceptions from conversion routines
+ * - Catches and reports any unexpected exceptions to prevent crashes  
+*/
 int MDelta::run(int argc, char* argv[])
 {
     try{
@@ -219,7 +246,7 @@ int MDelta::run(int argc, char* argv[])
             if (arg == "--version") {
                 printf(cli_messages::kVersionFmt,
                        program_name_.c_str(),
-                       DELTA_VERSION);
+                       UNITFY_VERSION);
                 printf("\n");
                 return 0;
             }

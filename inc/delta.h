@@ -1,3 +1,11 @@
+/*
+ * filename:    delta.h
+ * created:     26 April 2026
+ * author:      jole
+ * description: Public API: quantity types, unit enums, conversion functions,
+ *              and the MDelta application class.
+ */
+
 #pragma once
 
 #include <string>
@@ -49,7 +57,7 @@ inline constexpr const char* kUnknownPressureUnitPrefix = "Unknown pressure unit
 
 namespace cli_messages {
 inline constexpr const char* kVersionFmt = "%s v%s";
-inline constexpr const char* kGoodbyeFmt = "Thank you for using %s! Have a nice day! 2026-jole";
+inline constexpr const char* kGoodbyeFmt = "Thank you for using %s! Have a nice day! /jole";
 inline constexpr const char* kInvalidInputFormat = "Invalid input format. Use: value unit";
 inline constexpr const char* kReplBannerFmt = "%s v%s - unit conversion REPL";
 inline constexpr const char* kReplHint = "Type 'help' for usage or 'exit' to quit.";

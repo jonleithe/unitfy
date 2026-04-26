@@ -1,3 +1,10 @@
+/*
+ * filename:    unit_helpers.h
+ * created:     26 April 2026
+ * author:      jole
+ * description: Internal helpers for unit string parsing and normalisation.
+ */
+
 #pragma once
 
 #include <cctype>

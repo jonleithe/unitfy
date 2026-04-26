@@ -1,0 +1,61 @@
+.TH UNITFY 1 "April 2026" "unitfy 1.0.1" "User Commands"
+.SH NAME
+unitfy \- command-line unit conversion utility
+.SH SYNOPSIS
+.B unitfy
+.RI [ --version ]
+.br
+.B unitfy
+.I value unit
+.SH DESCRIPTION
+.B unitfy
+converts values between supported temperature, length, volume, and pressure units.
+It can run in one-shot mode from command-line arguments or in interactive REPL mode when no arguments are provided.
+.SH OPTIONS
+.TP
+.B --version
+Print the program version and exit.
+.SH REPL COMMANDS
+.TP
+.B help
+Show usage and supported units.
+.TP
+.B exit
+Exit REPL mode.
+.TP
+.B quit
+Exit REPL mode.
+.SH EXAMPLES
+.TP
+.B unitfy 100 celsius
+Convert 100 Celsius to other supported temperature units.
+.TP
+.B unitfy 1 atm
+Convert 1 atmosphere to other supported pressure units.
+.TP
+.B unitfy "12 fl oz"
+Convert 12 fluid ounces to other supported volume units.
+.TP
+.B unitfy
+Start interactive REPL mode.
+.SH SUPPORTED UNIT FAMILIES
+.TP
+.B Temperature
+C, F, K, R (and full names)
+.TP
+.B Length
+mm, cm, m, km, in, ft, usft, ukft, mi
+.TP
+.B Volume
+mL, L, gal, fl oz, m3, mm3, cm3
+.TP
+.B Pressure
+Pa, kPa, bar, atm, psi, torr, mmHg
+.SH FILES
+.TP
+.I ~/.delta_history
+Readline history file used by REPL mode when built with readline support.
+.SH AUTHOR
+jonleithe
+.SH LICENSE
+MIT

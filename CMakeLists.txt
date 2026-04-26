@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(delta VERSION 1.0.0 LANGUAGES CXX)
+project(delta VERSION 1.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -66,6 +66,10 @@ install(FILES LICENSE
 
 install(FILES README.md
     DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/unitfy
+)
+
+install(FILES docs/unitfy.1
+    DESTINATION ${CMAKE_INSTALL_MANDIR}/man1
 )
 
 include(CTest)

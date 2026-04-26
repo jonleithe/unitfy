@@ -7,6 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(VERSION_SUFFIX "-debug")
+else()
+    set(VERSION_SUFFIX "")
+endif()
+
 configure_file(
     ${CMAKE_SOURCE_DIR}/inc/delta_version.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/generated/delta_version.h

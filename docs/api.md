@@ -37,6 +37,8 @@ Used for conversion and validation errors (for example, invalid units, negative 
 - `Kilometer`
 - `Inch`
 - `Foot`
+- `USSurveyFoot`
+- `UKFoot`
 - `Mile`
 
 ### `VolumeUnit`

@@ -11,7 +11,7 @@ It supports temperature, length, volume, and pressure conversions, with:
 
 - Multiple quantity families in one CLI:
   - temperature (`C`, `F`, `K`, `R`)
-  - length (`mm`, `cm`, `m`, `km`, `in`, `ft`, `mi`)
+  - length (`mm`, `cm`, `m`, `km`, `in`, `ft`, `usft`, `ukft`, `mi`)
   - volume (`mL`, `L`, `gal`, `fl oz`, `m3`, `mm3`, `cm3`)
   - pressure (`Pa`, `kPa`, `bar`, `atm`, `psi`, `torr`, `mmHg`)
 - Case-insensitive unit parsing

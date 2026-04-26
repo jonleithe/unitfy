@@ -75,6 +75,8 @@ Units containing spaces must be quoted or passed as separate arguments:
 - `km`, `kilometer`, `kilometers`
 - `in`, `inch`, `inches`
 - `ft`, `foot`, `feet`
+- `usft`, `us ft`, `us foot`, `us feet`, `survey foot`, `survey feet`
+- `ukft`, `uk ft`, `uk foot`, `uk feet`, `imperial foot`, `imperial feet`
 - `mi`, `mile`, `miles`
 
 ### Volume
@@ -108,4 +110,5 @@ The tool reports conversion and validation errors, including:
 ## Notes
 
 - Temperature arithmetic operators are intentionally not exposed, because adding/subtracting absolute temperatures is ambiguous.
+- Plain `ft` uses the international foot. Use `usft` for US survey feet and `ukft` for UK imperial feet.
 - Output precision is quantity-specific (for example, temperature is printed with 2 decimal places).

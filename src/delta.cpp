@@ -29,7 +29,7 @@ namespace unitfy {
 #if defined(HAVE_READLINE)
 namespace {
 
-// Single-token aliases are used for REPL completion to avoid partial
+// Single-token aliases are used for REPL tab-completion to avoid partial
 // replacements when the user is mid-way through multi-word units.
 static constexpr const char* kReplCommands[] = {
     "help",

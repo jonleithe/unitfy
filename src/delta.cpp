@@ -65,7 +65,17 @@ MDelta::~MDelta()
 
 
 
-CommandResult MDelta::process_input(const std::string& input){
+/// MDelta::run() implements the main application logic:
+/// - Parses command-line arguments to determine mode (REPL vs single input)
+/// - In REPL mode, starts an interactive loop with readline support if available
+/// - In single input mode, processes the input string directly
+/// - Handles --version flag and provides usage hints for invalid input
+/// - Catches and reports QuantityError exceptions from conversion routines
+/// - Catches and reports any unexpected exceptions to prevent crashes
+CommandResult MDelta::process_input(const std::string& input)
+{
+
+    // Handle empty input and "help" command by displaying usage information.
     if (input.empty() || input == "help") {
         printf(cli_messages::kHelpTitleFmt, program_name_.c_str());
         printf("\n");
@@ -80,6 +90,7 @@ CommandResult MDelta::process_input(const std::string& input){
         return CommandResult::Continue;
     }
 
+    // Handle exit commands to leave the REPL.
     if (input == "exit" || input == "quit"){
         printf(cli_messages::kGoodbyeFmt, program_name_.c_str());
         printf("\n");
@@ -87,29 +98,63 @@ CommandResult MDelta::process_input(const std::string& input){
         return CommandResult::Exit;
     }
 
+    // The user is expected to input at least a value and a unit, like "100 C".
+    // Optionally, they can also provide a target unit for direct
+    // conversion, like "100 C F".
+    //
+    // The parsing logic below first tries to read a value and a unit. If that
+    // fails, it reports an invalid input format.
+    // Then it checks if there's an additional token. If there is exactly one
+    // more token, it treats that as the target unit for conversion. If there
+    // are multiple remaining tokens, it assumes the first one is part of the
+    // unit (to support multi-word units like "cubic meter") and combines them
+    // into the from_unit_str.
+    //
+    // Should the input unit be two worded, like "fl oz", the user can input
+    // either "2 fl oz" or "2 fl oz mL" (with target unit) and both will work
+    // as expected. This fallback logic comes a bit later in the code after we
+    // attempt to parse the target unit, since we want to allow users to specify
+    // a single-word target unit even when the from unit is multi-word.
+    
+    // Present the input as a stream to parse value and unit(s), and add
+    // variables to hold the parsed components.
     std::istringstream iss(input);
     double value;
     std::string from_unit_str;
     std::string to_unit_str;
-
-    if (!(iss >> value)){
+    
+    // First; try to parse a value. If that fails, report invalid input format.
+    if(!(iss >> value)){
         printf("%s\n", cli_messages::kInvalidInputFormat);
+        
         return CommandResult::Continue;
     }
 
-    if (!(iss >> from_unit_str)){
+    // Next, try to parse the from unit. If that fails, report invalid input
+    // format.
+    if(!(iss >> from_unit_str)){
         printf("%s\n", cli_messages::kInvalidInputFormat);
+        
         return CommandResult::Continue;
     }
 
+    // Finally, check if there's an additional token. If there is, read the rest
+    // of the line as a single string. If that string contains exactly one
+    // token, treat it as the target unit for conversion. If there are multiple
+    // remaining tokens, assume the first one is part of the unit (to support
+    // multi-word units like "cubic meter") and combine them into the
+    // from_unit_str.
     {
         std::string remainder;
         std::getline(iss >> std::ws, remainder);
-        if (!remainder.empty()) {
-            if (remainder.find(' ') == std::string::npos) {
+        if(!remainder.empty()){
+            if(remainder.find(' ') == std::string::npos){
+                
                 // Exactly one more token: targeted conversion mode
                 to_unit_str = remainder;
-            } else {
+            }
+            else{
+                
                 // Multiple remaining tokens: treat all as part of a multi-word from_unit
                 from_unit_str += " ";
                 from_unit_str += remainder;
@@ -118,14 +163,25 @@ CommandResult MDelta::process_input(const std::string& input){
     }
 
     try{
-        if (to_unit_str.empty()) {
+        // If to_unit_str is empty, we're in all-conversion mode and we try to
+        // match the from_unit_str against all known units. If to_unit_str is
+        // not empty, we try to match the from_unit_str against the target unit.
+        if(to_unit_str.empty()){
+            
             // All-conversion mode (existing behaviour)
             if (try_convert_temperature(value, from_unit_str)) return CommandResult::Continue;
             if (try_convert_length(value, from_unit_str))      return CommandResult::Continue;
             if (try_convert_volume(value, from_unit_str))      return CommandResult::Continue;
             if (try_convert_pressure(value, from_unit_str))    return CommandResult::Continue;
+            
             printf("Unknown unit: %s\n", from_unit_str.c_str());
-        } else {
+        }
+
+        // If to_unit_str is not empty, we're in targeted conversion mode. We
+        // first try to match the from_unit_str and to_unit_str against known
+        // units. If that fails, we fall back to treating "from to" as a
+        // multi-word from_unit (all-conversion).
+        else{
             // Targeted mode: try single-word from + single-word to
             const bool matched =
                 try_convert_temperature(value, from_unit_str, to_unit_str) ||
@@ -140,16 +196,21 @@ CommandResult MDelta::process_input(const std::string& input){
                     !try_convert_length(value, combined)      &&
                     !try_convert_volume(value, combined)      &&
                     !try_convert_pressure(value, combined)) {
-                    printf("Unknown unit: %s\n", combined.c_str());
+                    
+                        printf("Unknown unit: %s\n", combined.c_str());
                 }
             }
         }
     } // ———  END OF try_convert_* checks———————————————————————————————————————
 
+    // Catch and report any QuantityError exceptions thrown by the conversion
+    // routines.
     catch (const QuantityError& e){
         printf("Error: %s\n", e.what());
     } // ———  END OF catch(QuantityError)———————————————————————————————————————
 
+    // If all is good here, we return Continue to keep the REPL running. The
+    // conversion functions will have already printed the results to the user.
     return CommandResult::Continue;
 } // ———  END OF function MDelta::process_input()——————————————————————————————
 
@@ -182,7 +243,8 @@ void MDelta::repl(void)
             (void)read_history(history_file.c_str());
         }
 
-        while (true){
+        // REPL loop with readline support
+        while(true){
             char* raw_line = readline("> ");
             if (raw_line == nullptr) {
                 printf("\n");
@@ -199,7 +261,7 @@ void MDelta::repl(void)
             if (process_input(line) == CommandResult::Exit) {
                 break;
             }
-        }
+        } // ———  END OF REPL loop with readline————————————————————————————————
 
         if (!history_file.empty()) {
             (void)write_history(history_file.c_str());
@@ -207,7 +269,8 @@ void MDelta::repl(void)
 
     #else
         std::string line;
-        while (true){
+        // REPL loop without readline support
+        while(true){
             printf("> ");
             if (!std::getline(std::cin, line)){
                 break;

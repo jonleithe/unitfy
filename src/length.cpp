@@ -7,6 +7,11 @@
 
 namespace delta{
 
+namespace {
+constexpr double kInternationalFootInMeters = 0.3048;
+constexpr double kUSSurveyFootInMeters = 1200.0 / 3937.0;
+} // namespace
+
 Length::Length(double value, LengthUnit unit){
     
     switch (unit){
@@ -20,7 +25,11 @@ Length::Length(double value, LengthUnit unit){
                                         break;
         case LengthUnit::Inch:          meters_ = value * 0.0254;
                                         break;
-        case LengthUnit::Foot:          meters_ = value * 0.3048;
+        case LengthUnit::Foot:          meters_ = value * kInternationalFootInMeters;
+                                        break;
+        case LengthUnit::USSurveyFoot:  meters_ = value * kUSSurveyFootInMeters;
+                                        break;
+        case LengthUnit::UKFoot:        meters_ = value * kInternationalFootInMeters;
                                         break;
         case LengthUnit::Mile:          meters_ = value * 1609.344;
                                         break;
@@ -42,7 +51,9 @@ double Length::to_unit(LengthUnit unit) const{
         case LengthUnit::Meter:         return meters_;
         case LengthUnit::Kilometer:     return meters_ / 1000.0;
         case LengthUnit::Inch:          return meters_ / 0.0254;
-        case LengthUnit::Foot:          return meters_ / 0.3048;
+        case LengthUnit::Foot:          return meters_ / kInternationalFootInMeters;
+        case LengthUnit::USSurveyFoot:  return meters_ / kUSSurveyFootInMeters;
+        case LengthUnit::UKFoot:        return meters_ / kInternationalFootInMeters;
         case LengthUnit::Mile:          return meters_ / 1609.344;
         default:                        throw QuantityError("Invalid length unit");
     } // ———  END OF switch(unit)———————————————————————————————————————————————
@@ -51,7 +62,7 @@ double Length::to_unit(LengthUnit unit) const{
 
 
 std::string Length::to_string(LengthUnit unit) const{
-    static const char* names[] = {"mm", "cm", "m", "km", "in", "ft", "mi"};
+    static const char* names[] = {"mm", "cm", "m", "km", "in", "ft", "usft", "ukft", "mi"};
     
     return format_value(to_unit(unit),
                         format_settings::kLengthPrecision) 
@@ -136,6 +147,22 @@ static constexpr UnitAlias<LengthUnit> kLengthAliases[] = {
     {LengthUnit::Foot, "ft"},
     {LengthUnit::Foot, "foot"},
     {LengthUnit::Foot, "feet"},
+    {LengthUnit::USSurveyFoot, "usft"},
+    {LengthUnit::USSurveyFoot, "us ft"},
+    {LengthUnit::USSurveyFoot, "us foot"},
+    {LengthUnit::USSurveyFoot, "us feet"},
+    {LengthUnit::USSurveyFoot, "surveyfoot"},
+    {LengthUnit::USSurveyFoot, "surveyfeet"},
+    {LengthUnit::USSurveyFoot, "survey foot"},
+    {LengthUnit::USSurveyFoot, "survey feet"},
+    {LengthUnit::UKFoot, "ukft"},
+    {LengthUnit::UKFoot, "uk ft"},
+    {LengthUnit::UKFoot, "uk foot"},
+    {LengthUnit::UKFoot, "uk feet"},
+    {LengthUnit::UKFoot, "imperialfoot"},
+    {LengthUnit::UKFoot, "imperialfeet"},
+    {LengthUnit::UKFoot, "imperial foot"},
+    {LengthUnit::UKFoot, "imperial feet"},
     {LengthUnit::Mile, "mi"},
     {LengthUnit::Mile, "mile"},
     {LengthUnit::Mile, "miles"},
@@ -148,6 +175,8 @@ static constexpr UnitDisplay<LengthUnit> kLengthDisplay[] = {
     {LengthUnit::Kilometer, "km"},
     {LengthUnit::Inch, "in"},
     {LengthUnit::Foot, "ft"},
+    {LengthUnit::USSurveyFoot, "usft"},
+    {LengthUnit::UKFoot, "ukft"},
     {LengthUnit::Mile, "mi"},
 };
 
@@ -158,6 +187,8 @@ static constexpr LengthUnit kLengthOutputOrder[] = {
     LengthUnit::Kilometer,
     LengthUnit::Inch,
     LengthUnit::Foot,
+    LengthUnit::USSurveyFoot,
+    LengthUnit::UKFoot,
     LengthUnit::Mile,
 };
 

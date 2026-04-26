@@ -60,7 +60,7 @@ inline constexpr const char* kHelpTitleFmt = "%s unit conversion utility";
 inline constexpr const char* kHelpUsage = "Usage: value unit";
 inline constexpr const char* kHelpExamples = "Examples: 78 fahrenheit, 100 celsius, 5 meters, 2 liters, 1 atm";
 inline constexpr const char* kHelpTemperatureUnits = "Temperature units: C, F, K, R (or full names)";
-inline constexpr const char* kHelpLengthUnits = "Length units: mm, cm, m, km, in, ft, mi";
+inline constexpr const char* kHelpLengthUnits = "Length units: mm, cm, m, km, in, ft, usft, ukft, mi";
 inline constexpr const char* kHelpVolumeUnits = "Volume units: mL, L, gal, fl oz, m3, mm3, cm3";
 inline constexpr const char* kHelpPressureUnits = "Pressure units: Pa, kPa, bar, atm, psi, torr, mmHg";
 inline constexpr const char* kHelpExitHint = "Type 'exit' or 'quit' to leave REPL.";
@@ -94,6 +94,8 @@ enum class LengthUnit{
     Kilometer,
     Inch,
     Foot,
+    USSurveyFoot,
+    UKFoot,
     Mile
 }; // ———  END OF enum class LengthUnit ————————————————————————————————————————
 

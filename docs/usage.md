@@ -15,6 +15,7 @@ Examples:
 - `2 liters`
 - `1 atm`
 - `12 km mi`
+- `2026-05-09 date jd`
 
 Unit matching is case-insensitive.
 
@@ -37,6 +38,7 @@ If built with `readline`, command history is stored in `~/.unitfy_history`.
 If built with `readline`, tab completion is available in REPL:
 - first token: command completion (`help`, `exit`, `quit`)
 - later tokens: unit alias completion (for example, `celsius`, `km`, `kpa`, `floz`)
+- calendar dates use `YYYY-MM-DD` with the `date` unit
 
 ### CLI mode
 
@@ -47,6 +49,7 @@ You can pass conversion input directly as arguments:
 ./bin/unitfy 10 km
 ./bin/unitfy 12 km mi
 ./bin/unitfy 1.5 bar
+./bin/unitfy 60439 mjd date
 ```
 
 Behavior:
@@ -117,6 +120,14 @@ alias for the source unit:
 - `torr`
 - `mmhg`
 
+### Time
+
+- `date`, `calendar`, `gregorian` (`YYYY-MM-DD`)
+- `jd`, `julianday`, `julian day`
+- `mjd`, `modifiedjulian`, `modifiedjulianday`, `modified julian day`
+- `unix`, `epoch`, `unixs`, `epochseconds`
+- `unixms`, `epochms`, `epochmilliseconds`
+
 ## Error Handling
 
 The tool reports conversion and validation errors, including:
@@ -130,3 +141,4 @@ The tool reports conversion and validation errors, including:
 - Temperature arithmetic operators are intentionally not exposed, because adding/subtracting absolute temperatures is ambiguous.
 - Plain `ft` uses the international foot. Use `usft` for US survey feet and `ukft` for UK imperial feet.
 - Output precision is quantity-specific (for example, temperature is printed with 2 decimal places).
+- Time conversions treat calendar dates as UTC midnight in the proleptic Gregorian calendar.

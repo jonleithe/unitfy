@@ -3,7 +3,7 @@
  * created:     26 April 2026
  * author:      jole
  * description: Smoke tests for all quantity types (temperature, length,
- *              volume, pressure) covering conversions and error handling.
+ *              volume, pressure, time) covering conversions and error handling.
  */
 
 #include "delta.h"
@@ -104,6 +104,26 @@ int main() {
         try { unitfy::Pressure bad(-1.0, unitfy::PressureUnit::Pascal); }
         catch (const unitfy::QuantityError&) { threw = true; }
         ok &= check(threw, "negative pressure throws");
+    }
+
+    // ——— Time ———————————————————————————————————————————————————————————————
+    {
+        const unitfy::TimePoint unix_epoch(0.0, unitfy::TimeUnit::UnixSeconds);
+        ok &= check(nearly_equal(unix_epoch.to_unit(unitfy::TimeUnit::JulianDay), 2440587.5), "unix epoch -> JD");
+        ok &= check(nearly_equal(unix_epoch.to_unit(unitfy::TimeUnit::ModifiedJulianDay), 40587.0), "unix epoch -> MJD");
+        ok &= check(unix_epoch.to_string(unitfy::TimeUnit::Date) == "1970-01-01 date", "unix epoch -> date");
+
+        const unitfy::TimePoint mjd_epoch(40587.0, unitfy::TimeUnit::ModifiedJulianDay);
+        ok &= check(nearly_equal(mjd_epoch.to_unit(unitfy::TimeUnit::UnixSeconds), 0.0), "MJD epoch -> unix");
+
+        const unitfy::TimePoint j2000_midnight = unitfy::TimePoint::from_date_string("2000-01-01");
+        ok &= check(nearly_equal(j2000_midnight.to_unit(unitfy::TimeUnit::JulianDay), 2451544.5), "2000-01-01 -> JD");
+        ok &= check(nearly_equal(j2000_midnight.to_unit(unitfy::TimeUnit::ModifiedJulianDay), 51544.0), "2000-01-01 -> MJD");
+
+        bool threw = false;
+        try { (void)unitfy::TimePoint::from_date_string("2026-02-29"); }
+        catch (const unitfy::QuantityError&) { threw = true; }
+        ok &= check(threw, "invalid date throws");
     }
 
     if (ok) {

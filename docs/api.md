@@ -61,6 +61,14 @@ Used for conversion and validation errors (for example, invalid units, negative 
 - `Torr`
 - `MmHg`
 
+### `TimeUnit`
+
+- `Date`
+- `JulianDay`
+- `ModifiedJulianDay`
+- `UnixSeconds`
+- `UnixMilliseconds`
+
 ### `CommandResult`
 
 - `Continue`
@@ -99,6 +107,12 @@ bool try_convert_volume(double value,
 bool try_convert_pressure(double value,
                           const std::string& unit_str,
                           const std::string& to_unit_str = "");
+bool try_convert_time(double value,
+                      const std::string& unit_str,
+                      const std::string& to_unit_str = "");
+bool try_convert_time(const std::string& value_str,
+                      const std::string& unit_str,
+                      const std::string& to_unit_str = "");
 ```
 
 Return value semantics:
@@ -187,6 +201,23 @@ public:
 Notes:
 - Internally stored in Pascal.
 - Negative pressures are rejected.
+
+### `TimePoint`
+
+```cpp
+class TimePoint {
+public:
+    TimePoint(double value, TimeUnit unit);
+    static TimePoint from_date_string(const std::string& date);
+    double to_unit(TimeUnit unit) const;
+    std::string to_string(TimeUnit unit) const;
+};
+```
+
+Notes:
+- Internally stored as UTC seconds since the Unix epoch.
+- `Date` string input uses `YYYY-MM-DD` and represents UTC midnight.
+- Julian Day and Modified Julian Day follow the astronomical convention where Unix epoch is JD `2440587.5` and MJD `40587.0`.
 
 ## CLI Application Wrapper
 

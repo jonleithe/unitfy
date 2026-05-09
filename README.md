@@ -2,7 +2,7 @@
 
 `unitfy` is a C++17 command-line unit conversion utility, developed using AI.
 
-It supports temperature, length, volume, and pressure conversions, with:
+It supports temperature, length, volume, pressure, and time conversions, with:
 - interactive REPL mode
 - one-shot CLI conversion mode
 - optional readline history and tab-completion support (when `readline` is available)
@@ -14,6 +14,7 @@ It supports temperature, length, volume, and pressure conversions, with:
   - length (`mm`, `cm`, `m`, `km`, `in`, `ft`, `usft`, `ukft`, `mi`)
   - volume (`mL`, `L`, `gal`, `fl oz`, `m3`, `mm3`, `cm3`)
   - pressure (`Pa`, `kPa`, `bar`, `atm`, `psi`, `torr`, `mmHg`)
+  - time (`date`, `JD`, `MJD`, `unix`, `unixms`)
 - Case-insensitive unit parsing
 - Defensive error handling for invalid physical values
 - CMake preset-based Debug and Release builds
@@ -76,6 +77,8 @@ When built with `readline`, REPL tab completion is built in:
 ./bin/unitfy 5 km
 ./bin/unitfy 12 km mi
 ./bin/unitfy 1 atm
+./bin/unitfy 2026-05-09 date jd
+./bin/unitfy 60439 mjd date
 ./bin/unitfy 12 "fl oz"
 ```
 

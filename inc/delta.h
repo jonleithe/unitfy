@@ -51,6 +51,8 @@ inline constexpr const char* kUnknownTemperatureUnitPrefix = "Unknown temperatur
 inline constexpr const char* kUnknownLengthUnitPrefix = "Unknown length unit: ";
 inline constexpr const char* kUnknownVolumeUnitPrefix = "Unknown volume unit: ";
 inline constexpr const char* kUnknownPressureUnitPrefix = "Unknown pressure unit: ";
+inline constexpr const char* kUnknownTimeUnitPrefix = "Unknown time unit: ";
+inline constexpr const char* kInvalidDate = "Date must use YYYY-MM-DD";
 } // ———  END OF namespace quantity_error_messages —————————————————————————————
 
 
@@ -66,11 +68,12 @@ inline constexpr const char* kCliUsageReplFmt = "Or:    %s (no args for REPL mod
 inline constexpr const char* kCliUsageVersionFmt = "Or:    %s --version";
 inline constexpr const char* kHelpTitleFmt = "%s unit conversion utility";
 inline constexpr const char* kHelpUsage = "Usage: value unit [target_unit]";
-inline constexpr const char* kHelpExamples = "Examples: 78 fahrenheit, 100 celsius, 5 meters, 2 liters, 1 atm, 12 km mi";
+inline constexpr const char* kHelpExamples = "Examples: 78 fahrenheit, 100 celsius, 5 meters, 2 liters, 1 atm, 12 km mi, 2026-05-09 date jd";
 inline constexpr const char* kHelpTemperatureUnits = "Temperature units: C, F, K, R (or full names)";
 inline constexpr const char* kHelpLengthUnits = "Length units: mm, cm, m, km, in, ft, usft, ukft, mi";
 inline constexpr const char* kHelpVolumeUnits = "Volume units: mL, L, gal, fl oz, m3, mm3, cm3";
 inline constexpr const char* kHelpPressureUnits = "Pressure units: Pa, kPa, bar, atm, psi, torr, mmHg";
+inline constexpr const char* kHelpTimeUnits = "Time units: date, JD, MJD, unix, unixms";
 inline constexpr const char* kHelpExitHint = "Type 'exit' or 'quit' to leave REPL.";
 } // ———  END OF namespace cli_messages ————————————————————————————————————————
 
@@ -82,6 +85,7 @@ inline constexpr int kTemperaturePrecision  = 2;
 inline constexpr int kLengthPrecision       = 5;
 inline constexpr int kVolumePrecision       = 5;
 inline constexpr int kPressurePrecision     = 5;
+inline constexpr int kTimePrecision         = 5;
 } // ———  END OF namespace format_settings ———————————————————————————————————
 
 
@@ -133,6 +137,16 @@ enum class PressureUnit{
 
 
 
+enum class TimeUnit{
+    Date,
+    JulianDay,
+    ModifiedJulianDay,
+    UnixSeconds,
+    UnixMilliseconds
+}; // ———  END OF enum class TimeUnit —————————————————————————————————————————
+
+
+
 enum class CommandResult{
     Continue,
     Exit
@@ -146,6 +160,8 @@ bool try_convert_temperature(double value, const std::string& unit_str, const st
 bool try_convert_length(double value, const std::string& unit_str, const std::string& to_unit_str = "");
 bool try_convert_volume(double value, const std::string& unit_str, const std::string& to_unit_str = "");
 bool try_convert_pressure(double value, const std::string& unit_str, const std::string& to_unit_str = "");
+bool try_convert_time(double value, const std::string& unit_str, const std::string& to_unit_str = "");
+bool try_convert_time(const std::string& value_str, const std::string& unit_str, const std::string& to_unit_str = "");
 
 
 
@@ -226,6 +242,22 @@ public:
 
     friend Pressure operator*(double scalar, const Pressure& p);
 }; // ———  END OF class Pressure ———————————————————————————————————————————————
+
+
+
+class TimePoint
+{
+private:
+    double unix_seconds_ = 0.0;  // Store internally as UTC seconds since Unix epoch
+
+public:
+    TimePoint(double value, TimeUnit unit);
+
+    static TimePoint from_date_string(const std::string& date);
+
+    double to_unit(TimeUnit unit) const;
+    std::string to_string(TimeUnit unit) const;
+}; // ———  END OF class TimePoint —————————————————————————————————————————————
 
 
 

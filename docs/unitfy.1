@@ -1,4 +1,4 @@
-.TH UNITFY 1 "April 2026" "unitfy 1.0.2" "User Commands"
+.TH UNITFY 1 "May 2026" "unitfy 1.0.3" "User Commands"
 .SH NAME
 unitfy \- command-line unit conversion utility
 .SH SYNOPSIS
@@ -10,7 +10,7 @@ unitfy \- command-line unit conversion utility
 .RI [ target_unit ]
 .SH DESCRIPTION
 .B unitfy
-converts values between supported temperature, length, volume, and pressure units.
+converts values between supported temperature, length, volume, pressure, and time units.
 It can run in one-shot mode from command-line arguments or in interactive REPL mode when no arguments are provided.
 In one-shot mode, the input format is:
 .I value from_unit [to_unit]
@@ -44,6 +44,12 @@ Convert 1 atmosphere to other supported pressure units.
 .B unitfy 12 km mi
 Convert 12 kilometers to miles only.
 .TP
+.B unitfy 2026-05-09 date jd
+Convert a calendar date to Julian Day.
+.TP
+.B unitfy 60439 mjd date
+Convert Modified Julian Day to a calendar date.
+.TP
 .B unitfy "12 fl oz"
 Convert 12 fluid ounces to other supported volume units.
 .TP
@@ -62,6 +68,9 @@ mL, L, gal, fl oz, m3, mm3, cm3
 .TP
 .B Pressure
 Pa, kPa, bar, atm, psi, torr, mmHg
+.TP
+.B Time
+date, JD, MJD, unix, unixms
 .SH FILES
 .TP
 .I ~/.unitfy_history

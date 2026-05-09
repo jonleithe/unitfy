@@ -48,6 +48,9 @@ static constexpr const char* kUnitAliases[] = {
     "mm3", "cubicmm", "cubicmillimeter", "cm3", "cubiccm", "cubiccentimeter",
     "pa", "pascal", "pascals", "kpa", "kilopascal", "kilopascals", "bar",
     "atm", "atmosphere", "atmospheres", "psi", "torr", "mmhg",
+    "date", "calendar", "gregorian", "jd", "julianday", "mjd",
+    "modifiedjulian", "modifiedjulianday", "unix", "epoch", "unixs",
+    "epochseconds", "unixms", "epochms", "epochmilliseconds",
 };
 
 static std::vector<std::string> g_completion_words;
@@ -175,6 +178,22 @@ static std::string program_name_from_argv0(const char* argv0){
 
 
 
+static bool parse_double_strict(const std::string& text, double* out_value)
+{
+    std::istringstream iss(text);
+    double value;
+    char trailing = '\0';
+
+    if (!(iss >> value) || (iss >> trailing)) {
+        return false;
+    }
+
+    *out_value = value;
+    return true;
+} // ———  END OF function parse_double_strict()————————————————————————————————
+
+
+
 MDelta::MDelta()
 {
 
@@ -205,6 +224,7 @@ CommandResult MDelta::process_input(const std::string& input)
         printf("%s\n", cli_messages::kHelpLengthUnits);
         printf("%s\n", cli_messages::kHelpVolumeUnits);
         printf("%s\n", cli_messages::kHelpPressureUnits);
+        printf("%s\n", cli_messages::kHelpTimeUnits);
         printf("%s\n", cli_messages::kHelpExitHint);
 
         return CommandResult::Continue;
@@ -237,12 +257,14 @@ CommandResult MDelta::process_input(const std::string& input)
     // Present the input as a stream to parse value and unit(s), and add
     // variables to hold the parsed components.
     std::istringstream iss(input);
-    double value;
+    std::string value_str;
+    double value = 0.0;
     std::string from_unit_str;
     std::string to_unit_str;
     
-    // First; try to parse a value. If that fails, report invalid input format.
-    if(!(iss >> value)){
+    // First; read a value token. Most families require a numeric value, while
+    // the time family also accepts YYYY-MM-DD when paired with the date unit.
+    if(!(iss >> value_str)){
         printf("%s\n", cli_messages::kInvalidInputFormat);
         
         return CommandResult::Continue;
@@ -298,6 +320,13 @@ CommandResult MDelta::process_input(const std::string& input)
         if(to_unit_str.empty()){
             
             // All-conversion mode (existing behaviour)
+            if (try_convert_time(value_str, from_unit_str)) return CommandResult::Continue;
+
+            if (!parse_double_strict(value_str, &value)) {
+                printf("%s\n", cli_messages::kInvalidInputFormat);
+                return CommandResult::Continue;
+            }
+
             if (try_convert_temperature(value, from_unit_str)) return CommandResult::Continue;
             if (try_convert_length(value, from_unit_str))      return CommandResult::Continue;
             if (try_convert_volume(value, from_unit_str))      return CommandResult::Continue;
@@ -312,19 +341,31 @@ CommandResult MDelta::process_input(const std::string& input)
         // multi-word from_unit (all-conversion).
         else{
             // Targeted mode: try single-word from + single-word to
+            if (try_convert_time(value_str, from_unit_str, to_unit_str)) {
+                return CommandResult::Continue;
+            }
+
+            if (!parse_double_strict(value_str, &value)) {
+                printf("%s\n", cli_messages::kInvalidInputFormat);
+                return CommandResult::Continue;
+            }
+
             const bool matched =
                 try_convert_temperature(value, from_unit_str, to_unit_str) ||
                 try_convert_length(value, from_unit_str, to_unit_str)      ||
                 try_convert_volume(value, from_unit_str, to_unit_str)      ||
-                try_convert_pressure(value, from_unit_str, to_unit_str);
+                try_convert_pressure(value, from_unit_str, to_unit_str)    ||
+                try_convert_time(value, from_unit_str, to_unit_str);
 
             if (!matched) {
                 // Fallback: treat "from to" as a multi-word from_unit (all-conversion)
                 const std::string combined = from_unit_str + " " + to_unit_str;
-                if (!try_convert_temperature(value, combined) &&
+                if (!try_convert_time(value_str, combined)    &&
+                    !try_convert_temperature(value, combined) &&
                     !try_convert_length(value, combined)      &&
                     !try_convert_volume(value, combined)      &&
-                    !try_convert_pressure(value, combined)) {
+                    !try_convert_pressure(value, combined)    &&
+                    !try_convert_time(value, combined)) {
                     
                         printf("Unknown unit: %s\n", combined.c_str());
                 }
